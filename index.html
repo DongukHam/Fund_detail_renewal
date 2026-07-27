@@ -47,6 +47,38 @@
 }
 
 
+
+// Treemap hover tooltip
+const treeTooltip=document.getElementById('treeTooltip');
+document.querySelectorAll('.tree').forEach(tree=>{
+  tree.addEventListener('mousemove',e=>{
+    const name=tree.querySelector('b')?.textContent||'';
+    const weight=tree.querySelector('span')?.textContent||'';
+    const move=tree.querySelector('small')?.textContent||'등락 정보 없음';
+    treeTooltip.innerHTML=`<b>${name}</b>포트폴리오 비중 <em>${weight}</em><br>전일 대비 ${move}`;
+    treeTooltip.style.display='block';
+    treeTooltip.style.left=(e.clientX+16)+'px';
+    treeTooltip.style.top=(e.clientY+16)+'px';
+  });
+  tree.addEventListener('mouseleave',()=>treeTooltip.style.display='none');
+});
+
+// Lightweight prototype chatbot
+const aiChat=document.getElementById('aiChat');
+const aiChatOpen=document.getElementById('aiChatOpen');
+const aiChatClose=document.getElementById('aiChatClose');
+const aiChatBody=document.getElementById('aiChatBody');
+const aiChatInput=document.getElementById('aiChatInput');
+const aiChatSend=document.getElementById('aiChatSend');
+const answers={risk:'네. 위험등급 1등급의 매우 높은 위험 상품입니다. 중국 기술주와 과창판 비중이 높아 가격 변동과 정책·환율 위험을 함께 확인해야 합니다.',cost:'종류 C-e 기준 총보수는 연 1.05%이며 선취판매수수료와 환매수수료는 없습니다.',fit:'중국 첨단기술 산업의 장기 성장성을 기대하고 큰 변동성을 감수할 수 있는 중장기 투자자에게 상대적으로 적합합니다.'};
+function addChat(text,type='bot'){const div=document.createElement('div');div.className='chat-msg '+type;div.textContent=text;aiChatBody.appendChild(div);aiChatBody.scrollTop=aiChatBody.scrollHeight;}
+function answerQuestion(q){const raw=(q||'').trim();if(!raw)return;addChat(raw,'user');let key='fit';if(/위험|손실|변동/.test(raw))key='risk';else if(/비용|보수|수수료/.test(raw))key='cost';addChat(answers[key]);}
+aiChatOpen.addEventListener('click',()=>aiChat.classList.toggle('open'));
+aiChatClose.addEventListener('click',()=>aiChat.classList.remove('open'));
+document.querySelectorAll('.chat-quick button').forEach(btn=>btn.addEventListener('click',()=>{const key=btn.dataset.q;addChat(btn.textContent,'user');addChat(answers[key]);}));
+aiChatSend.addEventListener('click',()=>{answerQuestion(aiChatInput.value);aiChatInput.value='';});
+aiChatInput.addEventListener('keydown',e=>{if(e.key==='Enter'){answerQuestion(aiChatInput.value);aiChatInput.value='';}});
+
 </script>
 <style>
 :root{
@@ -135,6 +167,21 @@
 @media(max-width:1024px){.treemap-layout,.distribution-grid,.distribution-bottom{grid-template-columns:1fr}.tree-legend{min-height:250px}.distribution-summary{grid-template-columns:repeat(2,1fr)}.treemap{height:430px}.tab-inner{overflow-x:auto}.tab{flex:0 0 auto}}
 @media(max-width:640px){.distribution-summary{grid-template-columns:1fr}.treemap{height:560px;grid-template-columns:1fr 1fr;grid-template-rows:repeat(6,1fr)}.tree:nth-child(n){display:flex!important;grid-column:auto!important;grid-row:auto!important}.tree b{font-size:14px}.treemap-layout{gap:16px}.asset-panel-card,.dividend-chart-card,.distribution-table-card,.distribution-side{padding:18px}.dividend-chart{gap:8px;padding-left:0;padding-right:0}.dividend-col i{width:24px}}
 
+
+/* ===== Premium prototype upgrade ===== */
+.ai-brief{margin:22px 0;display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.ai-brief-main{position:relative;overflow:hidden;padding:30px;background:linear-gradient(135deg,#102f5f 0%,#214f85 72%,#f58220 170%);color:#fff;border-radius:18px;box-shadow:0 14px 34px rgba(20,56,100,.13)}
+.ai-brief-main:after{content:"AI";position:absolute;right:22px;bottom:-25px;font-size:120px;font-weight:900;color:rgba(255,255,255,.055)}
+.ai-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:18px;background:rgba(255,255,255,.12);font-size:12px;font-weight:900;color:#ffc58f}
+.ai-brief-main h3{font-size:25px;line-height:1.45;margin:17px 0 12px;max-width:720px}.ai-brief-main p{margin:0;color:#d8e5f5;line-height:1.75;font-size:14px;max-width:760px}
+.ai-points{display:grid;gap:12px}.ai-point{padding:20px 22px;background:#fff;border:1px solid var(--line);border-radius:15px;display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:center}.ai-point i{width:40px;height:40px;border-radius:12px;background:#eef4fb;color:#173b70;display:grid;place-items:center;font-style:normal;font-weight:900}.ai-point b{display:block;font-size:14px;margin-bottom:5px}.ai-point span{font-size:12px;color:#7a8595;line-height:1.55}
+.score-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:22px;margin-top:22px}.score-overall{padding:30px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}.score-ring{width:176px;height:176px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#f58220 0 78%,#e9edf2 78%);position:relative}.score-ring:after{content:"";position:absolute;inset:15px;border-radius:50%;background:#fff}.score-ring-content{position:relative;z-index:2}.score-ring-content strong{font-size:43px;color:#173b70}.score-ring-content span{display:block;color:#7d8795;font-size:12px;margin-top:3px}.score-overall h3{margin:20px 0 7px}.score-overall p{margin:0;color:#7a8493;font-size:13px;line-height:1.65}
+.score-details{padding:30px}.score-row{display:grid;grid-template-columns:90px 1fr 54px;gap:14px;align-items:center;padding:15px 0;border-bottom:1px solid #edf0f4}.score-row:last-child{border:0}.score-row span{font-size:13px;font-weight:800}.score-track{height:10px;background:#edf1f5;border-radius:9px;overflow:hidden}.score-fill{height:100%;border-radius:9px;background:linear-gradient(90deg,#173b70,#52a0df)}.score-row b{text-align:right;color:#173b70}.score-note{margin-top:18px;font-size:12px;line-height:1.65;color:#8a93a0;background:#f7f9fc;padding:14px 16px;border-radius:10px}
+.compare-funds{margin-top:22px;padding:30px}.compare-funds-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:20px}.compare-funds-head h3{margin:0}.compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.compare-card{border:1px solid var(--line);border-radius:15px;padding:22px;background:#fff;transition:.2s}.compare-card.featured{border:2px solid #f58220;box-shadow:0 10px 25px rgba(224,112,25,.09)}.compare-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(24,52,83,.08)}.compare-tag{font-size:11px;font-weight:900;color:#e07725}.compare-card h4{font-size:16px;line-height:1.5;margin:9px 0 18px;min-height:48px}.compare-stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.compare-stat{padding:12px;background:#f7f9fc;border-radius:10px}.compare-stat span{display:block;font-size:11px;color:#818b98;margin-bottom:5px}.compare-stat b{font-size:15px}.compare-cta{margin-top:17px;width:100%;border:0;border-radius:10px;padding:11px;background:#eef4fb;color:#173b70;font-weight:900;cursor:pointer}.compare-card.featured .compare-cta{background:#173b70;color:#fff}
+.tree{cursor:pointer;transition:filter .18s,transform .18s}.tree:hover{filter:brightness(1.06);z-index:2;transform:scale(1.008)}.tree-tooltip{position:fixed;z-index:120;display:none;min-width:210px;padding:15px 17px;border-radius:12px;background:rgba(17,37,66,.94);color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.23);pointer-events:none;font-size:12px;line-height:1.65}.tree-tooltip b{display:block;font-size:14px;margin-bottom:5px}.tree-tooltip em{font-style:normal;color:#ffb36e;font-weight:800}
+.ai-chat-button{position:fixed;right:32px;bottom:102px;z-index:79;width:56px;height:56px;border:0;border-radius:18px;background:#173b70;color:#fff;box-shadow:0 12px 28px rgba(20,55,100,.28);font-size:22px;cursor:pointer}.ai-chat{position:fixed;right:32px;bottom:170px;width:340px;z-index:100;background:#fff;border:1px solid #dfe5ec;border-radius:19px;box-shadow:0 20px 55px rgba(11,35,66,.22);overflow:hidden;display:none}.ai-chat.open{display:block}.ai-chat-head{background:#173b70;color:#fff;padding:17px 19px;display:flex;justify-content:space-between;align-items:center}.ai-chat-head b{font-size:15px}.ai-chat-head button{border:0;background:transparent;color:#fff;font-size:20px;cursor:pointer}.ai-chat-body{padding:17px;background:#f6f8fb;max-height:350px;overflow:auto}.chat-msg{max-width:87%;padding:11px 13px;border-radius:12px;margin-bottom:10px;font-size:12.5px;line-height:1.6}.chat-msg.bot{background:#fff;border:1px solid #e6eaf0}.chat-msg.user{background:#eaf2fb;margin-left:auto;color:#173b70}.chat-quick{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.chat-quick button{border:1px solid #d7e1ed;background:#fff;color:#315b8d;border-radius:18px;padding:8px 10px;font-size:11px;cursor:pointer}.chat-input{display:flex;gap:8px;padding:12px;background:#fff;border-top:1px solid #e7ebf0}.chat-input input{flex:1;border:1px solid #dfe5ec;border-radius:10px;padding:11px;font-size:12px}.chat-input button{border:0;border-radius:10px;background:#f58220;color:#fff;padding:0 14px;font-weight:900;cursor:pointer}
+@media(max-width:1050px){.ai-brief,.score-grid{grid-template-columns:1fr}.compare-grid{grid-template-columns:1fr}.ai-chat{right:18px;bottom:160px;width:min(340px,calc(100vw - 36px))}.ai-chat-button{right:18px}.trade-float{right:18px}}
+
 </style>
 </head>
 <body>
@@ -157,6 +204,11 @@
 <section id="point" class="panel active"><div class="section-title"><h2>이 펀드는 어떤 상품인가요?</h2><span class="note">핵심 답변 → 근거 → 적합성 순서로 확인하세요.</span></div>
 <div class="answer-box"><div class="answer-label">한 문장으로 답하면</div><div class="answer-text">중국 상해거래소 <em>과창판의 첨단기술 성장주</em>에 집중 투자하는 <em>매우 높은 위험의 주식형 펀드</em>입니다.</div></div>
 <div class="quick-answers"><div class="qa-chip"><small>어디에 투자하나요?</small><strong>중국 과창판 주식 60% 이상</strong></div><div class="qa-chip"><small>핵심 테마는?</small><strong>반도체·첨단제조·기술자립</strong></div><div class="qa-chip"><small>위험 수준은?</small><strong class="warn">1등급 · 매우 높은 위험</strong></div><div class="qa-chip"><small>투자비용은?</small><strong>총보수 연 1.05%</strong></div></div>
+
+<div class="ai-brief" aria-label="AI 상품 요약">
+  <div class="ai-brief-main"><span class="ai-badge">✦ AI FUND BRIEF</span><h3>중국의 반도체·AI·첨단제조 기업에 집중해 높은 성장 가능성과 높은 변동성을 함께 가진 상품입니다.</h3><p>최근 3년 성과는 강했지만 과창판 및 기술주 편중도가 높아, 단기 수익률보다 투자기간과 감내 가능한 손실 수준을 먼저 확인하는 것이 중요합니다.</p></div>
+  <div class="ai-points"><div class="ai-point"><i>01</i><div><b>성장 동력</b><span>AI 반도체, 첨단장비, 중국 기술자립</span></div></div><div class="ai-point"><i>02</i><div><b>핵심 위험</b><span>정책 변화, 기술주 변동성, 환율 위험</span></div></div><div class="ai-point"><i>03</i><div><b>적정 투자기간</b><span>단기 매매보다 중장기 관점에 적합</span></div></div></div>
+</div>
 <div class="overview-grid"><div class="card point-card">
 <div class="point"><span class="num">01</span><div><h3>중국 과창판 핵심 성장주에 집중</h3><p>중국본토 거래소 중 상해거래소 과창판에 상장된 중국 주식에 60% 이상 투자합니다.</p></div></div>
 <div class="point"><span class="num">02</span><div><h3>유동시가총액 상위 50개 중심</h3><p>과창판 상장 종목 중 유동시가총액 상위 50개와 향후 성장이 기대되는 종목으로 포트폴리오를 구성합니다.</p></div></div>
@@ -203,6 +255,11 @@
       </aside>
     </div>
   </div>
+
+<div class="score-grid">
+  <div class="card score-overall"><div class="score-ring"><div class="score-ring-content"><strong>78</strong><span>Portfolio Score</span></div></div><h3>성장성 우수 · 변동성 높음</h3><p>화면 구성용 예시 지표이며 실제 투자등급이나 추천 점수가 아닙니다.</p></div>
+  <div class="card score-details"><h3>포트폴리오 특성</h3><div class="score-row"><span>성장성</span><div class="score-track"><div class="score-fill" style="width:92%"></div></div><b>92</b></div><div class="score-row"><span>분산효과</span><div class="score-track"><div class="score-fill" style="width:68%"></div></div><b>68</b></div><div class="score-row"><span>안정성</span><div class="score-track"><div class="score-fill" style="width:38%"></div></div><b>38</b></div><div class="score-row"><span>유동성</span><div class="score-track"><div class="score-fill" style="width:81%"></div></div><b>81</b></div><div class="score-row"><span>비용효율</span><div class="score-track"><div class="score-fill" style="width:62%"></div></div><b>62</b></div><div class="score-note">점수는 시각화 예시입니다. 실제 서비스에서는 공식 데이터와 내부 산정 로직, 검증 및 고지 체계가 필요합니다.</div></div>
+</div>
 </section>
 
 <section id="distribution" class="panel">
@@ -235,7 +292,9 @@
     </tbody></table><div class="more-row">더보기</div></div>
     <div class="card distribution-side"><h3>분배 관련 안내</h3><div class="side-stat"><span>지급 기준</span><b>매월 말일</b></div><div class="side-stat"><span>지급 방식</span><b>현금 분배</b></div><div class="side-stat"><span>세전 기준</span><b>예</b></div><div class="side-stat"><span>재투자 여부</span><b>판매사별 상이</b></div></div>
   </div>
-  <div class="source-note"><b>예시 정보 안내</b><br>현재 표시된 분배금, 배당수익률 및 지급 일정은 화면 구성을 위한 가상 데이터입니다. 실제 적용 시 상품별 공식 데이터와 공시 기준을 연결해야 합니다.</div>
+  
+<div class="card compare-funds"><div class="compare-funds-head"><div><h3>이 상품과 비교해 보세요</h3><span class="note">투자지역과 성장 테마가 유사한 예시 상품입니다.</span></div></div><div class="compare-grid"><article class="compare-card featured"><span class="compare-tag">현재 상품</span><h4>미래에셋차이나과창판증권투자신탁(주식)</h4><div class="compare-stats"><div class="compare-stat"><span>3년 수익률</span><b>48.94%</b></div><div class="compare-stat"><span>위험등급</span><b>1등급</b></div><div class="compare-stat"><span>총보수</span><b>1.05%</b></div><div class="compare-stat"><span>핵심 테마</span><b>과창판</b></div></div><button class="compare-cta">선택됨</button></article><article class="compare-card"><span class="compare-tag">중국 본토</span><h4>미래에셋차이나본토증권자투자신탁1호(H)(주식)</h4><div class="compare-stats"><div class="compare-stat"><span>3개월 수익률</span><b>8.31%</b></div><div class="compare-stat"><span>위험등급</span><b>1등급</b></div><div class="compare-stat"><span>환헤지</span><b>적용</b></div><div class="compare-stat"><span>핵심 테마</span><b>중국 종합</b></div></div><button class="compare-cta">비교 담기</button></article><article class="compare-card"><span class="compare-tag">아시아 기술주</span><h4>미래에셋아시아테크증권투자신탁(주식)</h4><div class="compare-stats"><div class="compare-stat"><span>3개월 수익률</span><b>11.50%</b></div><div class="compare-stat"><span>위험등급</span><b>1등급</b></div><div class="compare-stat"><span>투자지역</span><b>아시아</b></div><div class="compare-stat"><span>핵심 테마</span><b>테크</b></div></div><button class="compare-cta">비교 담기</button></article></div></div>
+<div class="source-note"><b>예시 정보 안내</b><br>현재 표시된 분배금, 배당수익률 및 지급 일정은 화면 구성을 위한 가상 데이터입니다. 실제 적용 시 상품별 공식 데이터와 공시 기준을 연결해야 합니다.</div>
 </section>
 
 <section id="faq" class="panel"><div class="section-title"><h2>자주 묻는 질문</h2><span class="note">검색과 AI 답변에서 자주 묻는 질문을 명확한 문장으로 정리했습니다.</span></div><div class="faq-list">
@@ -292,6 +351,11 @@
 <section id="docs" class="panel"><div class="section-title"><h2>최신 공식 문서는 어디서 확인하나요?</h2><span class="note">상품 관련 문서와 주요 공시를 확인할 수 있습니다.</span></div><div class="file-grid"><div class="card file-card"><b>집합투자규약</b><span class="download">↓</span></div><div class="card file-card"><b>투자설명서</b><span class="download">↓</span></div><div class="card file-card"><b>간이투자설명서</b><span class="download">↓</span></div><div class="card file-card"><b>운용보고서</b><span class="download">↓</span></div></div><div class="card disclosure"><h3>최근 펀드 공시</h3><table><thead><tr><th>제목</th><th>날짜</th></tr></thead><tbody><tr><td>투자설명서 변경의 건</td><td>2026.02.11</td></tr><tr><td>집합투자규약 및 투자설명서 변경의 건</td><td>2025.02.14</td></tr><tr><td>집합투자규약 및 투자설명서 변경의 건</td><td>2024.12.18</td></tr><tr><td>집합투자규약 및 투자설명서 변경의 건</td><td>2024.09.13</td></tr></tbody></table></div></section>
 </main>
 
+
+<div class="tree-tooltip" id="treeTooltip"></div>
+<button class="ai-chat-button" id="aiChatOpen" type="button" aria-label="펀드 AI 도우미 열기">✦</button>
+<div class="ai-chat" id="aiChat"><div class="ai-chat-head"><b>펀드 AI 도우미</b><button id="aiChatClose" aria-label="닫기">×</button></div><div class="ai-chat-body" id="aiChatBody"><div class="chat-msg bot">이 상품에 대해 궁금한 점을 물어보세요. 아래 질문을 선택해도 됩니다.</div><div class="chat-quick"><button data-q="risk">이 펀드 위험해?</button><button data-q="cost">비용은 얼마야?</button><button data-q="fit">누구에게 적합해?</button></div></div><div class="chat-input"><input id="aiChatInput" placeholder="질문을 입력하세요"><button id="aiChatSend">전송</button></div></div>
+
 <button class="trade-float" id="tradeOpen" type="button" aria-haspopup="dialog" aria-controls="tradeModal"><span class="trade-ico">↗</span><span>매매하기</span></button>
 <div class="trade-overlay" id="tradeModal" role="dialog" aria-modal="true" aria-labelledby="tradeModalTitle">
   <div class="trade-modal">
@@ -332,6 +396,38 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&tradeModal.classLis
 document.querySelectorAll('a[href="#"]').forEach(link=>{
   link.addEventListener('click',e=>e.preventDefault());
 });
+
+
+// Treemap hover tooltip
+const treeTooltip=document.getElementById('treeTooltip');
+document.querySelectorAll('.tree').forEach(tree=>{
+  tree.addEventListener('mousemove',e=>{
+    const name=tree.querySelector('b')?.textContent||'';
+    const weight=tree.querySelector('span')?.textContent||'';
+    const move=tree.querySelector('small')?.textContent||'등락 정보 없음';
+    treeTooltip.innerHTML=`<b>${name}</b>포트폴리오 비중 <em>${weight}</em><br>전일 대비 ${move}`;
+    treeTooltip.style.display='block';
+    treeTooltip.style.left=(e.clientX+16)+'px';
+    treeTooltip.style.top=(e.clientY+16)+'px';
+  });
+  tree.addEventListener('mouseleave',()=>treeTooltip.style.display='none');
+});
+
+// Lightweight prototype chatbot
+const aiChat=document.getElementById('aiChat');
+const aiChatOpen=document.getElementById('aiChatOpen');
+const aiChatClose=document.getElementById('aiChatClose');
+const aiChatBody=document.getElementById('aiChatBody');
+const aiChatInput=document.getElementById('aiChatInput');
+const aiChatSend=document.getElementById('aiChatSend');
+const answers={risk:'네. 위험등급 1등급의 매우 높은 위험 상품입니다. 중국 기술주와 과창판 비중이 높아 가격 변동과 정책·환율 위험을 함께 확인해야 합니다.',cost:'종류 C-e 기준 총보수는 연 1.05%이며 선취판매수수료와 환매수수료는 없습니다.',fit:'중국 첨단기술 산업의 장기 성장성을 기대하고 큰 변동성을 감수할 수 있는 중장기 투자자에게 상대적으로 적합합니다.'};
+function addChat(text,type='bot'){const div=document.createElement('div');div.className='chat-msg '+type;div.textContent=text;aiChatBody.appendChild(div);aiChatBody.scrollTop=aiChatBody.scrollHeight;}
+function answerQuestion(q){const raw=(q||'').trim();if(!raw)return;addChat(raw,'user');let key='fit';if(/위험|손실|변동/.test(raw))key='risk';else if(/비용|보수|수수료/.test(raw))key='cost';addChat(answers[key]);}
+aiChatOpen.addEventListener('click',()=>aiChat.classList.toggle('open'));
+aiChatClose.addEventListener('click',()=>aiChat.classList.remove('open'));
+document.querySelectorAll('.chat-quick button').forEach(btn=>btn.addEventListener('click',()=>{const key=btn.dataset.q;addChat(btn.textContent,'user');addChat(answers[key]);}));
+aiChatSend.addEventListener('click',()=>{answerQuestion(aiChatInput.value);aiChatInput.value='';});
+aiChatInput.addEventListener('keydown',e=>{if(e.key==='Enter'){answerQuestion(aiChatInput.value);aiChatInput.value='';}});
 
 </script>
 </body></html>
